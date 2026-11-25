@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#172b2b" />
+  <meta name="description" content="40道生活化选择题，测测你的灵魂气质更接近哪位中国历史人物。纯娱乐测试，无需注册。" />
+  <title>测测你的灵魂对应哪位中国历史人物</title>
+  <style>
+    :root {
+      --ink: #1d302f;
+      --ink-soft: #53615b;
+      --jade: #416c61;
+      --jade-deep: #294a43;
+      --gold: #b68b4b;
+      --gold-light: #d8bd8b;
+      --paper: #f4efe4;
+      --paper-2: #ebe3d3;
+      --line: rgba(65, 76, 64, .18);
+      --white: #fffdf8;
+      --shadow: 0 24px 70px rgba(29, 48, 47, .12);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 14% 10%, rgba(196, 173, 130, .19), transparent 34%),
+        radial-gradient(ellipse at 88% 82%, rgba(91, 127, 109, .13), transparent 38%),
+        repeating-linear-gradient(0deg, rgba(82, 71, 52, .018) 0, rgba(82, 71, 52, .018) 1px, transparent 1px, transparent 5px),
+        var(--paper);
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button { font: inherit; }
+    .page-shell { width: min(1100px, calc(100% - 40px)); margin: 0 auto; padding: 25px 0 42px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
+    .brand { display: flex; align-items: center; gap: 11px; color: var(--ink); letter-spacing: .15em; font-size: 12px; font-weight: 700; }
+    .brand-mark { width: 34px; height: 34px; border: 1px solid var(--gold); border-radius: 50%; display: grid; place-items: center; color: var(--gold); font-family: "Songti SC", "SimSun", serif; font-size: 18px; }
+    .top-note { font-size: 11px; letter-spacing: .16em; color: #7a8177; }
+    .screen { display: none; animation: rise .48s ease both; }
+    .screen.active { display: block; }
+    @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    .hero {
+      position: relative; overflow: hidden; min-height: 540px; border-radius: 5px;
+      padding: clamp(34px, 6vw, 72px); color: #f6f0e2;
+      background:
+        radial-gradient(circle at 82% 28%, rgba(190, 154, 92, .23), transparent 21%),
+        radial-gradient(circle at 78% 74%, rgba(100, 135, 112, .19), transparent 28%),
+        linear-gradient(125deg, #172b2b 0%, #223c37 54%, #304b40 100%);
+      box-shadow: var(--shadow);
+      display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(230px, .65fr); gap: 25px; align-items: center;
+    }
+    .hero::before, .hero::after { content: ""; position: absolute; pointer-events: none; border: 1px solid rgba(218, 192, 143, .22); }
+    .hero::before { inset: 15px; }
+    .hero::after { inset: 22px; border-color: rgba(218, 192, 143, .10); }
+    .hero-copy, .hero-art { position: relative; z-index: 1; }
+    .eyebrow { display: flex; align-items: center; gap: 12px; font-size: 11px; letter-spacing: .25em; color: var(--gold-light); margin-bottom: 26px; }
+    .eyebrow::before { content: ""; width: 30px; height: 1px; background: var(--gold); }
+    h1, h2, h3, p { margin-top: 0; }
+    .hero h1 { font-family: "Songti SC", "STSong", "SimSun", serif; font-weight: 500; letter-spacing: .08em; line-height: 1.34; font-size: clamp(34px, 5.5vw, 58px); margin-bottom: 20px; }
+    .hero h1 span { display: block; color: #d8bd8b; font-size: .62em; letter-spacing: .22em; margin-top: 13px; }
+    .hero-description { max-width: 510px; color: rgba(246, 240, 226, .78); line-height: 2; font-size: 14px; margin-bottom: 30px; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 18px; color: rgba(246, 240, 226, .68); font-size: 11px; letter-spacing: .08em; margin-bottom: 32px; }
+    .hero-meta strong { color: #e2c995; font-size: 17px; font-family: Georgia, serif; margin-right: 5px; }
+    .primary-btn, .secondary-btn, .quiet-btn {
+      border: 0; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .primary-btn { display: inline-flex; align-items: center; justify-content: center; gap: 18px; min-width: 190px; padding: 15px 22px; color: #1e332e; background: linear-gradient(135deg, #e0c999, #bd965a); letter-spacing: .13em; font-weight: 700; box-shadow: 0 8px 22px rgba(0, 0, 0, .16); }
+    .primary-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(0,0,0,.22); }
+    .primary-btn:focus-visible, .secondary-btn:focus-visible, .quiet-btn:focus-visible, .option:focus-visible { outline: 3px solid #d5ae6e; outline-offset: 3px; }
+    .hero-art { min-height: 355px; display: grid; place-items: center; }
+    .seal { width: min(260px, 80%); aspect-ratio: 1; border: 1px solid rgba(221, 195, 147, .47); border-radius: 50%; display: grid; place-items: center; position: relative; transform: rotate(-8deg); }
+    .seal::before { content: ""; position: absolute; inset: 13px; border: 1px solid rgba(221, 195, 147, .26); border-radius: 50%; }
+    .seal::after { content: ""; position: absolute; width: 1px; height: 120%; background: rgba(221, 195, 147, .16); transform: rotate(42deg); }
+    .seal-inner { text-align: center; transform: rotate(8deg); position: relative; z-index: 1; }
+    .seal-main { font-family: "Songti SC", "STSong", serif; font-size: 94px; line-height: 1; font-weight: 400; color: rgba(226, 201, 149, .92); text-shadow: 0 4px 20px rgba(0,0,0,.18); }
+    .seal-sub { font-size: 10px; letter-spacing: .35em; color: rgba(246, 240, 226, .66); margin-top: 18px; }
+    .hero-caption { position: absolute; bottom: 7px; right: 4px; color: rgba(246,240,226,.38); writing-mode: vertical-rl; letter-spacing: .25em; font-family: "Songti SC", serif; font-size: 12px; }
+    .disclaimer { text-align: center; color: #85877c; font-size: 11px; letter-spacing: .06em; margin: 22px 0 0; }
+
+    .quiz-panel, .result-panel { background: rgba(255, 253, 248, .88); border: 1px solid rgba(120, 110, 85, .17); box-shadow: var(--shadow); }
+    .quiz-panel { max-width: 850px; margin: 0 auto; padding: clamp(24px, 5vw, 54px); min-height: 570px; }
+    .quiz-topline { display: flex; align-items: center; justify-content: space-between; gap: 20px; color: #8a887c; font-size: 11px; letter-spacing: .14em; }
+    .question-count { color: var(--jade); font-family: Georgia, serif; font-size: 16px; letter-spacing: .06em; }
+    .progress-track { height: 3px; background: #e7e0d3; margin: 17px 0 37px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--jade), #b58c4e); width: 0; transition: width .35s ease; }
+    .question-category { display: inline-block; padding: 6px 10px; border: 1px solid rgba(182, 139, 75, .45); color: #9c7844; font-size: 10px; letter-spacing: .16em; margin-bottom: 18px; }
+    .question-title { font-family: "Songti SC", "STSong", "SimSun", serif; font-size: clamp(23px, 3.5vw, 31px); line-height: 1.65; font-weight: 500; letter-spacing: .04em; margin-bottom: 10px; }
+    .question-hint { font-size: 12px; color: #929084; margin-bottom: 27px; }
+    .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .option { display: flex; align-items: flex-start; gap: 13px; min-height: 78px; text-align: left; border: 1px solid #e4ddcf; padding: 17px 16px; color: var(--ink); background: rgba(255,255,255,.58); cursor: pointer; transition: all .2s ease; line-height: 1.65; }
+    .option:hover { border-color: #a98a5b; background: #fbf7ed; transform: translateY(-1px); }
+    .option.selected { border-color: var(--jade); background: #edf2ec; box-shadow: inset 3px 0 0 var(--jade); }
+    .option-index { flex: 0 0 23px; height: 23px; display: grid; place-items: center; border: 1px solid #d8c9ad; border-radius: 50%; color: #9d7c4c; font-family: Georgia, serif; font-size: 11px; margin-top: 1px; }
+    .option.selected .option-index { color: #fff; background: var(--jade); border-color: var(--jade); }
+    .option-text { font-size: 14px; }
+    .quiz-footer { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-top: 34px; padding-top: 19px; border-top: 1px solid var(--line); }
+    .quiet-btn { background: transparent; color: #777c72; font-size: 12px; padding: 10px 0; }
+    .quiet-btn:disabled { opacity: .3; cursor: not-allowed; }
+    .footer-hint { color: #aaa394; font-size: 11px; }
+    .next-hint { color: var(--jade); font-size: 11px; opacity: 0; transition: opacity .2s ease; }
+    .next-hint.show { opacity: 1; }
+
+    .result-panel { max-width: 900px; margin: 0 auto; overflow: hidden; }
+    .result-head { position: relative; overflow: hidden; padding: 46px clamp(25px, 6vw, 65px) 40px; color: #f5efe1; background: linear-gradient(120deg, #1c3331, #355347); }
+    .result-head::before { content: ""; position: absolute; width: 340px; height: 340px; border: 1px solid rgba(222, 195, 143, .17); border-radius: 50%; right: -100px; top: -150px; box-shadow: 0 0 0 18px rgba(222,195,143,.035), 0 0 0 38px rgba(222,195,143,.025); }
+    .result-kicker { color: #d8bd8b; font-size: 10px; letter-spacing: .24em; margin-bottom: 24px; }
+    .result-person { position: relative; z-index: 1; font-family: "Songti SC", "STSong", serif; font-size: clamp(38px, 6vw, 58px); line-height: 1.3; font-weight: 500; letter-spacing: .08em; margin-bottom: 8px; }
+    .result-type { color: #dec99e; letter-spacing: .18em; font-size: 12px; margin-bottom: 23px; }
+    .result-tagline { position: relative; z-index: 1; max-width: 650px; color: rgba(248,242,229,.88); font-family: "Songti SC", "STSong", serif; font-size: clamp(17px, 2.4vw, 22px); line-height: 1.8; }
+    .result-seal { position: absolute; z-index: 0; right: 8%; bottom: 25px; width: 118px; height: 118px; border: 1px solid rgba(224, 199, 151, .45); border-radius: 50%; display: grid; place-items: center; color: rgba(224,199,151,.65); font-family: "Songti SC", serif; font-size: 56px; transform: rotate(-12deg); }
+    .result-body { padding: clamp(25px, 5vw, 52px) clamp(22px, 6vw, 62px) 45px; }
+    .result-intro { color: #69746b; font-size: 13px; line-height: 1.9; margin-bottom: 30px; max-width: 720px; }
+    .section-title { display: flex; align-items: center; gap: 12px; color: #9b794b; font-size: 11px; letter-spacing: .2em; margin: 28px 0 14px; }
+    .section-title::after { content: ""; height: 1px; background: #e4dccd; flex: 1; }
+    .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .feature-card { background: #f7f3ea; border: 1px solid #eae2d4; padding: 18px 19px; min-height: 112px; }
+    .feature-card h3 { font-size: 13px; color: var(--jade-deep); margin-bottom: 9px; letter-spacing: .05em; }
+    .feature-card p { color: #73776e; font-size: 12px; line-height: 1.8; margin: 0; }
+    .trait-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .trait { border: 1px solid #d9d0be; color: #637268; font-size: 11px; letter-spacing: .06em; padding: 7px 11px; background: #fbf8f1; }
+    .score-list { display: grid; gap: 12px; }
+    .score-row { display: grid; grid-template-columns: 76px 1fr 36px; gap: 12px; align-items: center; font-size: 11px; color: #73776e; }
+    .score-track { height: 6px; background: #e8e1d4; overflow: hidden; }
+    .score-bar { height: 100%; background: linear-gradient(90deg, #6b8b78, #bb985f); width: 0; transition: width .7s ease; }
+    .score-value { text-align: right; font-family: Georgia, serif; color: #8f784f; }
+    .secondary-match { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: #8b887c; font-size: 12px; margin-top: 18px; }
+    .secondary-match strong { color: var(--jade-deep); font-size: 13px; font-weight: 600; }
+    .result-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 34px; padding-top: 24px; border-top: 1px solid var(--line); }
+    .secondary-btn { padding: 13px 17px; color: #f8f3e8; background: var(--jade-deep); font-size: 12px; letter-spacing: .08em; }
+    .secondary-btn:hover { background: #1e3932; transform: translateY(-1px); }
+    .secondary-btn.outline { color: var(--jade-deep); background: transparent; border: 1px solid #a7b1a6; }
+    .secondary-btn.outline:hover { background: #edf1ea; }
+    .result-footnote { color: #a09b8e; font-size: 10px; line-height: 1.8; margin: 19px 0 0; }
+    .site-footer { text-align: center; color: #999486; font-size: 10px; letter-spacing: .12em; padding: 27px 0 0; }
+
+    @media (max-width: 720px) {
+      .page-shell { width: min(100% - 24px, 560px); padding-top: 15px; }
+      .topbar { margin-bottom: 16px; }
+      .top-note { display: none; }
+      .hero { grid-template-columns: 1fr; min-height: 0; padding: 38px 28px 35px; }
+      .hero-art { min-height: 180px; margin-top: 6px; }
+      .seal { width: 164px; }
+      .seal-main { font-size: 62px; }
+      .hero-caption { display: none; }
+      .hero-description { font-size: 13px; }
+      .quiz-panel { min-height: 0; padding: 25px 20px 24px; }
+      .progress-track { margin-bottom: 27px; }
+      .options { grid-template-columns: 1fr; gap: 9px; }
+      .option { min-height: 66px; padding: 14px 13px; }
+      .quiz-footer { margin-top: 24px; }
+      .footer-hint { display: none; }
+      .result-head { padding: 35px 25px 33px; }
+      .result-seal { width: 75px; height: 75px; font-size: 37px; right: 7%; bottom: 20px; }
+      .result-body { padding: 25px 20px 30px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .feature-card { min-height: 0; }
+      .score-row { grid-template-columns: 66px 1fr 30px; gap: 8px; }
+      .result-actions { display: grid; grid-template-columns: 1fr 1fr; }
+      .result-actions .secondary-btn:first-child { grid-column: 1 / -1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">鉴</span><span>观人 · 见己</span></div>
+      <div class="top-note">一场关于自我的东方小测验</div>
+    </header>
+
+    <main>
+      <section id="homeScreen" class="screen active" aria-labelledby="mainTitle">
+        <div class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow">AN EASTERN PERSONALITY JOURNEY</div>
+            <h1 id="mainTitle">测测你的灵魂<br />对应哪位中国历史人物<span>你自有来处，也自成风骨</span></h1>
+            <p class="hero-description">如果把你的日常选择、处事方式与内心偏好，放进漫长的历史长河里，会映照出谁的影子？用 40 道生活化问题，寻找与你气质相近的那位古人。</p>
+            <div class="hero-meta">
+              <span><strong>40</strong> 道生活选择</span>
+              <span><strong>07</strong> 种人物气质</span>
+              <span><strong>06</strong> 分钟左右</span>
+            </div>
+            <button id="startBtn" class="primary-btn" type="button">开始探寻 <span aria-hidden="true">↗</span></button>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="seal"><div class="seal-inner"><div class="seal-main">人</div><div class="seal-sub">知己 · 知心</div></div></div>
+            <div class="hero-caption">山河为卷 · 以心为尺</div>
+          </div>
+        </div>
+        <p class="disclaimer">本测试仅供娱乐与自我观察，不是历史考试，也不构成专业心理评估。</p>
+      </section>
+
+      <section id="quizScreen" class="screen" aria-label="人格测试答题区">
+        <div class="quiz-panel">
+          <div class="quiz-topline"><span id="questionCategory">日常习惯</span><span class="question-count"><span id="currentNumber">01</span> / 40</span></div>
+          <div class="progress-track" role="progressbar" aria-label="答题进度" aria-valuemin="0" aria-valuemax="40" aria-valuenow="0" id="progressTrack"><div id="progressFill" class="progress-fill"></div></div>
+          <div id="questionCategoryTag" class="question-category">日常习惯</div>
+          <h2 id="questionTitle" class="question-title">题目加载中……</h2>
+          <p class="question-hint">没有标准答案，选最接近你真实反应的一项。</p>
+          <div id="optionsList" class="options"></div>
+          <div class="quiz-footer">
+            <button id="backBtn" class="quiet-btn" type="button">← 上一题</button>
+            <span id="nextHint" class="next-hint" aria-live="polite">已记录，正在前往下一题…</span>
+            <span class="footer-hint">跟随直觉，继续向前</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="resultScreen" class="screen" aria-label="测试结果">
+        <div class="result-panel" id="resultCard">
+          <div class="result-head">
+            <div class="result-kicker">YOUR HISTORICAL SOUL ARCHETYPE · 测试结果</div>
+            <div id="resultPerson" class="result-person">诸葛亮</div>
+            <div id="resultType" class="result-type">谋士型 · 运筹帷幄</div>
+            <p id="resultTagline" class="result-tagline">你不是想得太多，只是习惯在落子之前，看清整盘棋。</p>
+            <div id="resultSeal" class="result-seal" aria-hidden="true">谋</div>
+          </div>
+          <div class="result-body">
+            <p id="resultIntro" class="result-intro"></p>
+            <div class="section-title">你的性格关键词</div>
+            <div id="traitList" class="trait-list"></div>
+            <div class="section-title">人物匹配解读</div>
+            <div class="feature-grid">
+              <article class="feature-card"><h3>为什么是这位古人</h3><p id="matchReason"></p></article>
+              <article class="feature-card"><h3>你不一定察觉的隐藏优势</h3><p id="hiddenStrength"></p></article>
+              <article class="feature-card"><h3>给你的相处提示</h3><p id="relationshipTip"></p></article>
+              <article class="feature-card"><h3>专属趣味彩蛋</h3><p id="easterEgg"></p></article>
+            </div>
+            <div class="section-title">你的七种气质分布</div>
+            <div id="scoreList" class="score-list"></div>
+            <div class="secondary-match">你的次要气质也有存在感：<strong id="secondaryPerson">苏轼 · 洒脱通透</strong></div>
+            <div class="result-actions">
+              <button id="saveImageBtn" class="secondary-btn" type="button">保存结果分享图 ↗</button>
+              <button id="copyResultBtn" class="secondary-btn outline" type="button">复制结果文案</button>
+              <button id="retryBtn" class="secondary-btn outline" type="button">重新测试</button>
+            </div>
+            <p class="result-footnote">说明：历史人物仅作为文化气质的趣味参照，不代表对人物生平的完整评价，也不意味着你与其经历或价值观完全相同。每个人都不止一种面貌。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">山河万里 · 人心有声</footer>
+  </div>
+
+  <script>
+    "use strict";
+    const TYPE_NAMES = {
+      m: "谋士", d: "帝王", s: "文人", x: "侠客", p: "诗人", g: "将领", y: "隐士"
+    };
+    const TYPE_ORDER = ["m", "d", "s", "x", "p", "g", "y"];
+    const typeProfiles = {
+      m: {
+        person: "诸葛亮", title: "谋士型 · 运筹帷幄", seal: "谋",
+        tagline: "你不是想得太多，只是习惯在落子之前，看清整盘棋。",
+        intro: "你的灵魂更接近谋士气质：观察细、思路缜密，既在意眼前的解法，也会顺手推演下一步。你未必急着站到台前，但常常是那个让事情变得更有章法的人。",
+        traits: ["善于观察", "长线思考", "冷静判断", "重视细节", "擅长规划"],
+        reason: "你的选择多次体现出先收集信息、拆解问题、预判后果的倾向。比起立刻行动，你更愿意先弄清局面，再找到投入最少、效果更稳的路径。这与诸葛亮作为谋士所代表的筹划与审慎气质相呼应。",
+        strength: "你能把零散信息连成线，也擅长提前发现别人忽略的风险。团队遇到复杂局面时，你往往能提供一张清晰的路线图。",
+        tip: "别让周全变成迟迟不开始。允许自己先做一个七十分的版本，很多答案会在行动中出现。",
+        egg: "你的隐藏技能像随身携带一块沙盘：别人还在讨论问题，你已经默默推演了三个结局。"
+      },
+      d: {
+        person: "李世民", title: "帝王型 · 格局与决断", seal: "势",
+        tagline: "你不一定想掌控一切，但关键时刻，你愿意站出来定方向。",
+        intro: "你更接近帝王气质：有全局意识，重视资源与秩序，也愿意承担选择带来的责任。你看问题不只看自己的一亩三分地，还会留意不同的人如何协同。",
+        traits: ["全局意识", "决断力", "组织协调", "目标感", "责任担当"],
+        reason: "你在不少情境里倾向于重新安排优先级、明确方向，并让不同的人各展所长。你关注的不只是把一件事做好，也在意整个局面能否持续运转。这与李世民所代表的识人、纳谏与统筹气质相近。",
+        strength: "你有把人和资源组织起来的潜力，遇到复杂选择时也愿意承担决策责任。你能看见个人努力之外的系统因素。",
+        tip: "真正的掌舵不等于事事亲自操心。适当放手、信任伙伴，会让你的格局变成团队的力量。",
+        egg: "你可能有一份看不见的年度规划表，连周末躺平都希望安排得井井有条。"
+      },
+      s: {
+        person: "王羲之", title: "文人型 · 清醒而有审美", seal: "雅",
+        tagline: "你对世界的认真，藏在那些别人觉得不必在意的小地方。",
+        intro: "你更接近文人气质：重视表达、质感与细节，对人与事有自己的观察标准。你不一定追求热闹，但希望生活有层次、有审美，也有值得反复琢磨的内容。",
+        traits: ["细腻敏锐", "审美自觉", "表达欲", "重视质感", "独立判断"],
+        reason: "你的选择显示出对细节、表达和体验品质的在意。你愿意花时间把事情整理清楚，也会注意到环境、语言和氛围中的微妙差异。这种既讲究又不盲从的气质，让人想到王羲之所代表的文人风雅。",
+        strength: "你对细节的感受力，能转化成审美判断、沟通能力和持续打磨作品的耐心。你有能力让普通的事变得更有质感。",
+        tip: "不必等到所有细节都完美才展示自己。表达本身也是一种成长，不需要每次都写成定稿。",
+        egg: "你可能会为了一个顺眼的排版多花十分钟，也会因为一句恰到好处的话开心一整天。"
+      },
+      x: {
+        person: "郭解", title: "侠客型 · 重义而坦荡", seal: "义",
+        tagline: "你可以不爱出风头，但看见在意的人受委屈，很难装作没看见。",
+        intro: "你的灵魂更接近侠客气质：看重真诚、承诺与人与人之间的情义。你不一定擅长场面上的客套，却愿意在重要时刻给出直接而实际的支持。",
+        traits: ["重情重义", "真诚直接", "行动仗义", "边界分明", "保护欲"],
+        reason: "你多次把身边人的感受、承诺是否兑现以及是否公平放在重要位置。比起漂亮话，你更相信关键时刻的实际行动。这与历史叙事中郭解所代表的游侠重义形象有相通之处；这里取的是重诺与仗义的文化意象。",
+        strength: "你能让人感到可靠，也敢于在需要时表达立场。你对关系中的不真诚很敏锐，往往能分辨谁值得深交。",
+        tip: "仗义也要留一点力气给自己。帮助别人之前，先确认自己的边界和承受能力。",
+        egg: "朋友临时搬家、深夜求助、需要一个靠谱队友时，你很容易成为通讯录里第一个被想起的人。"
+      },
+      p: {
+        person: "李白", title: "诗人型 · 浪漫而自由", seal: "诗",
+        tagline: "你总想给日子留一扇窗，好让风、月亮和新鲜事进来。",
+        intro: "你更接近诗人气质：感受力强，喜欢新鲜体验，不愿把生活过成一张只有待办事项的表格。你容易被灵感点亮，也愿意为真正心动的事留出空间。",
+        traits: ["想象丰富", "感受力强", "热爱自由", "灵感驱动", "富有感染力"],
+        reason: "你的答案里常出现对新体验、氛围和内心感受的重视。你愿意顺着好奇心走一段，也不想让所有事情都被效率和结果定义。这种洒脱、热烈又带点理想主义的气质，令人联想到李白。",
+        strength: "你能为平淡生活注入新鲜感，也容易捕捉到值得分享的瞬间。你的想象力和表达感染力，常常能鼓舞身边的人。",
+        tip: "灵感值得珍惜，落地也同样重要。给喜欢的事设一个轻巧的小计划，让热爱不只停在想象里。",
+        egg: "你可能会因为一场晚霞临时改变回家路线，甚至觉得这趟绕路完全值得。"
+      },
+      g: {
+        person: "岳飞", title: "将领型 · 坚韧而有执行力", seal: "行",
+        tagline: "你相信的不是空喊口号，而是一步一步把事情做成。",
+        intro: "你更接近将领气质：执行力强，遇到困难不容易轻易散架。你看重目标、纪律和实际成果，愿意在关键阶段扛住压力，把事情推进到最后。",
+        traits: ["行动果断", "耐力持久", "目标明确", "纪律意识", "抗压韧性"],
+        reason: "你的选择往往指向先行动、拆分任务、持续推进和承担责任。遇到阻碍时，你更愿意寻找下一步能做什么，而不是长时间停留在情绪里。这与岳飞所代表的坚毅、担当和执行气质相呼应。",
+        strength: "你能把目标转化为具体动作，并在重复和困难中保持耐心。别人容易放弃的阶段，可能正是你逐渐拉开差距的时候。",
+        tip: "韧性不代表必须一直硬撑。合理休息、调整节奏，也是长期作战能力的一部分。",
+        egg: "你的待办清单可能很有压迫感，但划掉最后一项时，快乐也是真的很具体。"
+      },
+      y: {
+        person: "陶渊明", title: "隐士型 · 自在而有边界", seal: "隐",
+        tagline: "你不是不在乎世界，只是不愿把自己交给所有喧嚣。",
+        intro: "你更接近隐士气质：重视内在秩序、个人空间与生活的自主感。你知道热闹有它的好处，但也清楚独处、慢下来和按自己的节奏生活同样珍贵。",
+        traits: ["内心自洽", "重视自由", "独立自主", "低耗能社交", "知足而清醒"],
+        reason: "你的回答常常倾向于保留空间、减少无谓消耗，并按照内心认可的节奏做决定。你在意生活是否舒展，而不只是外界如何评价。这与陶渊明所代表的淡泊、自主和回归本心的气质相近。",
+        strength: "你有能力辨认真正重要的事，不容易被外界节奏完全裹挟。独处时的恢复力和自我整理能力，是你很珍贵的资源。",
+        tip: "守住自己的节奏，也别忘了给重要的人留一扇门。自主和连接并不冲突。",
+        egg: "你心里可能一直有一间小小的桃花源：不一定要真的搬去山里，但最好有一段谁也别打扰的时间。"
+      }
+    };
+
+    const option = (text, main, secondary) => ({ text, main, secondary });
+    const questions = [
+      { category: "日常习惯", prompt: "原本安排好的周末，突然有一半计划被打乱，你通常会？", options: [
+        option("先弄清楚变动原因，再重新排出最合适的方案。", "m", "s"),
+        option("迅速调整优先级，决定接下来怎么安排。", "d", "g"),
+        option("把新旧安排都写下来，慢慢理出头绪。", "s", "m"),
+        option("先问同行的人怎么想，大家舒服最重要。", "x", "y")
+      ]},
+      { category: "日常习惯", prompt: "难得有一个完全属于自己的清晨，你更可能怎样开始？", options: [
+        option("列出今天最重要的三件事，按节奏推进。", "g", "d"),
+        option("泡杯喜欢的饮品，安静享受不被催促的时间。", "y", "s"),
+        option("出门走走，看看今天有没有新鲜的小惊喜。", "p", "x"),
+        option("先处理最关键的事，给整天定下方向。", "d", "m")
+      ]},
+      { category: "兴趣偏好", prompt: "和朋友去一座陌生城市，你最想把时间花在哪里？", options: [
+        option("走进老街巷，留意当地人的生活细节。", "x", "s"),
+        option("提前研究路线，把重要地点串成一条线。", "m", "d"),
+        option("找一家有特色的小店，感受城市的气息。", "p", "y"),
+        option("逛博物馆或展览，看看这座城留下了什么。", "s", "m")
+      ]},
+      { category: "兴趣偏好", prompt: "突然空出一个下午，没有任何必须完成的任务，你会？", options: [
+        option("读点东西、写点文字，让思绪慢慢沉淀。", "s", "y"),
+        option("去户外活动一下，身体动起来才舒服。", "g", "x"),
+        option("随心出门，走到哪里算哪里。", "p", "y"),
+        option("留在自己的空间里，享受清静和自在。", "y", "s")
+      ]},
+      { category: "日常习惯", prompt: "出门旅行前，你收拾行李时最像哪一种人？", options: [
+        option("先查天气、交通和备用方案，尽量减少意外。", "m", "s"),
+        option("按清单快速打包，东西齐全就出发。", "g", "d"),
+        option("确认关键物品，其他到了当地再决定。", "d", "p"),
+        option("只带真正喜欢和需要的，轻装上阵。", "p", "y")
+      ]},
+      { category: "处事方式", prompt: "遇到一个看起来很复杂、没人愿意接手的问题，你会？", options: [
+        option("拆解问题，找出最关键的突破口。", "m", "s"),
+        option("先定目标和分工，让事情开始运转。", "d", "g"),
+        option("立刻试一个可行办法，边做边修正。", "g", "x"),
+        option("先确认问题是否真的值得投入这么多精力。", "s", "y")
+      ]},
+      { category: "处事方式", prompt: "团队合作时，大家意见很多、迟迟定不下来，你更常做什么？", options: [
+        option("梳理各方观点，找出能兼顾的方案。", "m", "s"),
+        option("明确目标和时间，推动大家做出决定。", "d", "g"),
+        option("先照顾团队氛围，避免有人被落下。", "x", "p"),
+        option("主动承担一块任务，用行动带动进度。", "g", "d")
+      ]},
+      { category: "处事方式", prompt: "和别人发生分歧时，你最看重什么？", options: [
+        option("把事实和逻辑说清楚，别让误会扩大。", "s", "m"),
+        option("彼此是否真诚，态度比输赢更重要。", "x", "y"),
+        option("保留各自空间，不必每件事都争出结论。", "y", "s"),
+        option("尽快找到共识，让事情继续往前走。", "d", "g")
+      ]},
+      { category: "处事方式", prompt: "面对一个有吸引力、但结果不确定的机会，你通常？", options: [
+        option("先研究风险和条件，再判断是否值得下注。", "m", "d"),
+        option("看它是否符合长期方向，符合就果断选择。", "d", "g"),
+        option("如果真的心动，愿意先体验再说。", "p", "x"),
+        option("除非内心很确定，否则不轻易打乱现有生活。", "y", "s")
+      ]},
+      { category: "情绪反应", prompt: "一件你认真准备的事没达到预期，你会怎么调整？", options: [
+        option("复盘哪里出了问题，整理出下一次的改进方法。", "s", "m"),
+        option("先稳住情绪，马上制定下一轮行动。", "g", "d"),
+        option("找信任的人聊聊，然后重新鼓起劲。", "x", "p"),
+        option("暂时抽离一下，等心情平复后再看。", "s", "y")
+      ]},
+      { category: "社交模式", prompt: "朋友深夜发来消息，说自己遇到了麻烦，你更可能？", options: [
+        option("先听对方说完，再尽可能给出实际帮助。", "x", "s"),
+        option("帮忙分析问题，列出眼下能做的几步。", "m", "d"),
+        option("如果需要，我会直接出现，陪他一起处理。", "d", "x"),
+        option("认真关心对方，也会判断自己能帮到什么程度。", "y", "s")
+      ]},
+      { category: "社交模式", prompt: "在一场不太熟悉的聚会上，你通常是什么状态？", options: [
+        option("找一个有趣的话题，和人聊得尽兴。", "p", "x"),
+        option("先观察大家的互动，再决定加入哪段对话。", "s", "m"),
+        option("自然地认识新朋友，也会照顾场上的气氛。", "d", "x"),
+        option("不勉强自己，和一两位聊得来的人待着就好。", "y", "s")
+      ]},
+      { category: "社交模式", prompt: "认识一个让你感到有意思的人，你最先注意到什么？", options: [
+        option("对方说话有没有内容，思考方式是否清晰。", "s", "m"),
+        option("有没有独特的表达和让人心动的气质。", "p", "s"),
+        option("对方做事是否靠谱，关键时刻能不能担当。", "x", "g"),
+        option("相处是否自然，不需要刻意迎合。", "x", "y")
+      ]},
+      { category: "社交模式", prompt: "当一段关系让你觉得有些疲惫，你更倾向于？", options: [
+        option("找机会说开，弄清楚彼此真正的需求。", "m", "d"),
+        option("直接表达自己的底线，不再勉强。", "x", "g"),
+        option("减少消耗，给双方一点时间和空间。", "y", "s"),
+        option("尝试换一种相处方式，让关系重新流动起来。", "d", "p")
+      ]},
+      { category: "社交模式", prompt: "一项集体成果获得称赞，你希望大家怎样看待你的贡献？", options: [
+        option("知道我确实参与了关键判断和整体安排。", "d", "m"),
+        option("看见我踏实完成的部分，不需要特别强调。", "g", "y"),
+        option("认可我提出的想法和细节上的用心。", "s", "p"),
+        option("大家都开心就好，成果本身比名声重要。", "p", "x")
+      ]},
+      { category: "情绪反应", prompt: "当你明显感到生气时，最像哪种反应？", options: [
+        option("先离开现场，等自己想清楚再沟通。", "y", "s"),
+        option("把问题摆到台面上，明确说出不能接受的地方。", "g", "x"),
+        option("如果涉及重要的人或原则，会立刻站出来。", "x", "d"),
+        option("先判断对方真正的动机，避免被情绪牵着走。", "m", "s")
+      ]},
+      { category: "情绪反应", prompt: "连续碰到几件不顺心的小事，你会怎样找回状态？", options: [
+        option("做点具体的事，把生活重新拉回正轨。", "g", "d"),
+        option("找出反复出现的问题，从根源上调整。", "m", "s"),
+        option("换个环境，去看看让自己开心的东西。", "p", "x"),
+        option("暂停社交和任务，给自己一段安静时间。", "y", "s")
+      ]},
+      { category: "情绪反应", prompt: "面对一件还没有答案、又暂时无法控制的事，你会？", options: [
+        option("搜集信息，弄清自己还能影响哪些部分。", "s", "m"),
+        option("接受暂时的不确定，先把今天过好。", "p", "y"),
+        option("定一个阶段性方案，边观察边推进。", "d", "g"),
+        option("找点喜欢的事转移注意力，让心情松下来。", "p", "y")
+      ]},
+      { category: "处事方式", prompt: "别人给了你一条比较尖锐的建议，你通常会？", options: [
+        option("拆开建议里的事实部分，看看是否有道理。", "s", "m"),
+        option("先记下来，之后用行动验证。", "g", "d"),
+        option("追问对方具体依据，不接受模糊评价。", "m", "x"),
+        option("如果表达方式不尊重人，我会明确指出。", "x", "s")
+      ]},
+      { category: "兴趣偏好", prompt: "哪一种瞬间最容易让你突然产生灵感？", options: [
+        option("读到一句有力量的话，脑海里延伸出很多想法。", "p", "s"),
+        option("独处时，某个困扰很久的问题忽然想通。", "s", "y"),
+        option("走在路上，偶然发现一个很美的生活片段。", "y", "p"),
+        option("和不同的人交流，碰撞出新的可能。", "d", "m")
+      ]},
+      { category: "兴趣偏好", prompt: "如果今晚只能留一小时给自己，你更想做什么？", options: [
+        option("读一本有思想、有细节的书。", "s", "m"),
+        option("看一场现场演出，或者听喜欢的音乐。", "p", "x"),
+        option("和朋友散步聊天，分享最近的见闻。", "x", "p"),
+        option("什么也不安排，让大脑真正休息。", "y", "s")
+      ]},
+      { category: "兴趣偏好", prompt: "学一项新技能时，你更容易被什么吸引？", options: [
+        option("掌握方法和原理，知道它为什么有效。", "s", "m"),
+        option("尽快上手练习，从实际反馈里进步。", "g", "x"),
+        option("找到自己的学习路径，研究更高效的方式。", "m", "d"),
+        option("不设太多目标，保持好奇心慢慢探索。", "p", "y")
+      ]},
+      { category: "兴趣偏好", prompt: "在陌生街区闲逛时，你最容易被什么吸引？", options: [
+        option("街头故事、老店招牌和人与人之间的烟火气。", "x", "p"),
+        option("建筑、器物和空间里隐藏的设计细节。", "s", "m"),
+        option("一条没走过的小路，想知道它通向哪里。", "p", "y"),
+        option("安静的公园或河边，可以慢下来待一会儿。", "y", "p")
+      ]},
+      { category: "兴趣偏好", prompt: "你做一件纯粹出于兴趣的事，最享受哪个阶段？", options: [
+        option("不断打磨细节，直到它呈现出理想的样子。", "s", "g"),
+        option("刚开始时灵感涌现、什么都充满可能。", "p", "y"),
+        option("遇到难点并最终攻克，看到自己变得更强。", "g", "m"),
+        option("沉浸其中，不被打扰，也不急着交出成果。", "y", "s")
+      ]},
+      { category: "社交模式", prompt: "一顿理想的晚餐，你最希望餐桌上的气氛是？", options: [
+        option("话题有深度，大家能交换不同观点。", "s", "d"),
+        option("轻松热闹，聊到开心处可以开怀大笑。", "p", "x"),
+        option("彼此熟悉自在，不需要刻意找话题。", "x", "y"),
+        option("有一个让大家都投入的主题，交流有收获。", "d", "m")
+      ]},
+      { category: "处事方式", prompt: "遇到一场有竞争性质的活动，你通常会？", options: [
+        option("设定明确目标，认真准备并争取好成绩。", "g", "d"),
+        option("研究对手和规则，找出更聪明的策略。", "m", "s"),
+        option("享受挑战，也希望大家公平、坦荡地较量。", "x", "g"),
+        option("看重参与体验，不会让输赢影响太多心情。", "p", "y")
+      ]},
+      { category: "处事方式", prompt: "你发现一套大家都在遵守的流程，其实效率很低，你会？", options: [
+        option("分析问题在哪，提出更合理的替代方案。", "m", "s"),
+        option("先做出一个可行版本，用结果推动改变。", "g", "d"),
+        option("整理出清楚的依据，让相关的人理解原因。", "s", "d"),
+        option("如果不值得折腾，就避开无意义的内耗。", "y", "p")
+      ]},
+      { category: "处事方式", prompt: "进入一个全新的环境，你通常先做什么？", options: [
+        option("主动认识关键的人，尽快建立连接。", "x", "d"),
+        option("观察规则、资源和关系，再决定怎么融入。", "m", "s"),
+        option("找到自己的位置和节奏，不急着表现。", "y", "s"),
+        option("先体验环境本身，顺着好奇心探索。", "p", "g")
+      ]},
+      { category: "处事方式", prompt: "一个值得尝试、但可能失败的计划摆在面前，你会？", options: [
+        option("先做小范围试验，确认关键风险。", "m", "s"),
+        option("只要目标重要，就愿意承担必要的压力。", "g", "d"),
+        option("被它真正打动时，我愿意为热爱冒一点险。", "p", "x"),
+        option("先评估它会不会破坏目前珍惜的生活状态。", "y", "d")
+      ]},
+      { category: "处事方式", prompt: "面对一个需要长期坚持的目标，你最依靠什么？", options: [
+        option("明确方向，持续调整资源和节奏。", "d", "m"),
+        option("规律训练，把大目标拆成每天的行动。", "g", "s"),
+        option("不断优化方法，让每一步都更有效。", "m", "g"),
+        option("确认它真的是自己想要的，而不是外界期待。", "y", "p")
+      ]},
+      { category: "价值偏好", prompt: "在你心里，怎样算是过得不错的一段人生？", options: [
+        option("做成几件有分量的事，也承担过重要责任。", "d", "g"),
+        option("保有热爱和表达，留下值得回味的作品。", "p", "s"),
+        option("保持好奇与学习，不断拓宽理解世界的方式。", "s", "m"),
+        option("日子安稳自在，能按自己的心意生活。", "y", "p")
+      ]},
+      { category: "日常习惯", prompt: "如果可以重新布置自己的工作或学习空间，你会优先考虑？", options: [
+        option("资料清晰、工具顺手，方便专注思考。", "s", "m"),
+        option("布局合理、流程顺畅，做事不拖沓。", "m", "g"),
+        option("有足够空间活动，东西拿取方便。", "g", "d"),
+        option("光线舒服、有一点美感，让人愿意待着。", "p", "y")
+      ]},
+      { category: "价值偏好", prompt: "拿到一笔计划之外的收入，你更可能怎么使用？", options: [
+        option("留作储备，让未来多一些选择空间。", "y", "m"),
+        option("投入能带来长期回报的项目或学习。", "d", "m"),
+        option("奖励自己一次期待已久的体验。", "p", "x"),
+        option("请重要的人吃顿饭，分享这份开心。", "x", "p")
+      ]},
+      { category: "社交模式", prompt: "准备一份礼物送给重要的人，你最在意什么？", options: [
+        option("它是否真正解决了对方的需要。", "x", "d"),
+        option("有没有认真观察过对方的喜好和细节。", "s", "m"),
+        option("它能不能带来惊喜，留下一个特别的回忆。", "p", "x"),
+        option("礼物不必贵重，心意自然、没有负担就好。", "y", "p")
+      ]},
+      { category: "情绪反应", prompt: "别人真诚地夸奖你时，你心里最接近哪种反应？", options: [
+        option("谢谢认可，但我更愿意保持自己的节奏。", "s", "y"),
+        option("开心，也会想下一步还能把事情做得更好。", "d", "g"),
+        option("觉得付出被看见了，继续努力也值得。", "g", "x"),
+        option("会记住对方的表达，也在意其中的真诚。", "s", "p")
+      ]},
+      { category: "价值偏好", prompt: "多年以后，你希望别人提起你时，首先想到什么？", options: [
+        option("这个人有趣、有想象力，活得很有自己的样子。", "p", "y"),
+        option("这个人做成过事，也能让身边的人变得更好。", "d", "g"),
+        option("这个人讲义气，重要时刻从不缺席。", "x", "g"),
+        option("这个人有想法、有判断，做事值得信赖。", "m", "s")
+      ]},
+      { category: "日常习惯", prompt: "一个完全没预告的空闲日突然降临，你会怎样对待它？", options: [
+        option("约一个想见的人，去做点有趣的事。", "x", "p"),
+        option("随手挑一件想做的事，不给自己设定路线。", "p", "y"),
+        option("把积攒的小目标处理掉，享受完成感。", "g", "d"),
+        option("关掉提醒，好好待在自己的空间里。", "y", "s")
+      ]},
+      { category: "社交模式", prompt: "你认为什么样的人最容易成为真正值得信任的伙伴？", options: [
+        option("说到做到，关键时候愿意站在你身边。", "x", "g"),
+        option("尊重边界，能理解彼此不必时时黏在一起。", "y", "s"),
+        option("思路清楚，遇到问题能一起分析解决。", "m", "s"),
+        option("有担当，也愿意听取不同意见。", "d", "g")
+      ]},
+      { category: "处事方式", prompt: "工作或生活中有人提出一个不太合理的要求，你会？", options: [
+        option("先弄清对方真正想解决什么，再给替代方案。", "m", "s"),
+        option("把情况和限制讲清楚，尽量有理有据。", "s", "d"),
+        option("判断事情是否紧急，必要时先扛下来推进。", "g", "x"),
+        option("明确自己的边界，不因为怕尴尬就答应。", "d", "y")
+      ]},
+      { category: "价值偏好", prompt: "如果用一句话提醒未来的自己，你更愿意写下哪一句？", options: [
+        option("给自己留一片自在之地，别在喧闹里弄丢本心。", "y", "p"),
+        option("去看更大的世界，也别辜负心里的热望。", "p", "x"),
+        option("重要的事要有人承担，认准方向就坚定向前。", "d", "g"),
+        option("保持行动和耐心，把想做的事一步步做成。", "g", "m")
+      ]}
+    ];
+
+    const homeScreen = document.getElementById("homeScreen");
+    const quizScreen = document.getElementById("quizScreen");
+    const resultScreen = document.getElementById("resultScreen");
+    const startBtn = document.getElementById("startBtn");
+    const backBtn = document.getElementById("backBtn");
+    const nextHint = document.getElementById("nextHint");
+    const answers = new Array(questions.length).fill(null);
+    let currentIndex = 0;
+    let inputLocked = false;
+    let advanceTimer = null;
+    let finalScores = null;
+
+    function showScreen(target) {
+      [homeScreen, quizScreen, resultScreen].forEach(el => el.classList.remove("active"));
+      target.classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderQuestion() {
+      const q = questions[currentIndex];
+      document.getElementById("questionCategory").textContent = q.category;
+      document.getElementById("questionCategoryTag").textContent = q.category;
+      document.getElementById("currentNumber").textContent = String(currentIndex + 1).padStart(2, "0");
+      document.getElementById("questionTitle").textContent = q.prompt;
+      const progress = (currentIndex / questions.length) * 100;
+      document.getElementById("progressFill").style.width = `${progress}%`;
+      const progressTrack = document.getElementById("progressTrack");
+      progressTrack.setAttribute("aria-valuenow", String(currentIndex));
+      backBtn.disabled = currentIndex === 0;
+      nextHint.classList.remove("show");
+      const list = document.getElementById("optionsList");
+      list.innerHTML = "";
+      q.options.forEach((item, i) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option" + (answers[currentIndex] === i ? " selected" : "");
+        btn.setAttribute("aria-pressed", answers[currentIndex] === i ? "true" : "false");
+        const idx = document.createElement("span");
+        idx.className = "option-index";
+        idx.textContent = String.fromCharCode(65 + i);
+        const text = document.createElement("span");
+        text.className = "option-text";
+        text.textContent = item.text;
+        btn.append(idx, text);
+        btn.addEventListener("click", () => chooseAnswer(i));
+        list.appendChild(btn);
+      });
+    }
+
+    function chooseAnswer(optionIndex) {
+      if (inputLocked) return;
+      answers[currentIndex] = optionIndex;
+      inputLocked = true;
+      document.querySelectorAll(".option").forEach((btn, i) => {
+        btn.classList.toggle("selected", i === optionIndex);
+        btn.setAttribute("aria-pressed", i === optionIndex ? "true" : "false");
+      });
+      nextHint.classList.add("show");
+      window.clearTimeout(advanceTimer);
+      advanceTimer = window.setTimeout(() => {
+        if (currentIndex < questions.length - 1) {
+          currentIndex += 1;
+          inputLocked = false;
+          renderQuestion();
+        } else {
+          showResult();
+        }
+      }, 260);
+    }
+
+    function goBack() {
+      if (currentIndex <= 0) return;
+      window.clearTimeout(advanceTimer);
+      inputLocked = false;
+      currentIndex -= 1;
+      renderQuestion();
+    }
+
+    function calculateScores() {
+      const scores = Object.fromEntries(TYPE_ORDER.map(type => [type, 0]));
+      const primaryCounts = Object.fromEntries(TYPE_ORDER.map(type => [type, 0]));
+      answers.forEach((answerIndex, questionIndex) => {
+        if (answerIndex === null) return;
+        const picked = questions[questionIndex].options[answerIndex];
+        if (!scores.hasOwnProperty(picked.main) || !scores.hasOwnProperty(picked.secondary)) {
+          throw new Error(`第 ${questionIndex + 1} 题存在无效评分维度`);
+        }
+        scores[picked.main] += 2;
+        scores[picked.secondary] += 1;
+        primaryCounts[picked.main] += 1;
+      });
+      return { scores, primaryCounts };
+    }
+
+    function showResult() {
+      finalScores = calculateScores();
+      const ranked = [...TYPE_ORDER].sort((a, b) =>
+        finalScores.scores[b] - finalScores.scores[a] ||
+        finalScores.primaryCounts[b] - finalScores.primaryCounts[a] ||
+        TYPE_ORDER.indexOf(a) - TYPE_ORDER.indexOf(b)
+      );
+      const mainType = ranked[0];
+      const secondType = ranked[1];
+      const profile = typeProfiles[mainType];
+      document.getElementById("resultPerson").textContent = profile.person;
+      document.getElementById("resultType").textContent = profile.title;
+      document.getElementById("resultTagline").textContent = profile.tagline;
+      document.getElementById("resultSeal").textContent = profile.seal;
+      document.getElementById("resultIntro").textContent = profile.intro;
+      document.getElementById("matchReason").textContent = profile.reason;
+      document.getElementById("hiddenStrength").textContent = profile.strength;
+      document.getElementById("relationshipTip").textContent = profile.tip;
+      document.getElementById("easterEgg").textContent = profile.egg;
+      const traitList = document.getElementById("traitList");
+      traitList.innerHTML = "";
+      profile.traits.forEach(trait => {
+        const span = document.createElement("span");
+        span.className = "trait";
+        span.textContent = trait;
+        traitList.appendChild(span);
+      });
+      document.getElementById("secondaryPerson").textContent = `${typeProfiles[secondType].person} · ${TYPE_NAMES[secondType]}气质`;
+      const maxScore = Math.max(...ranked.map(type => finalScores.scores[type]), 1);
+      const scoreList = document.getElementById("scoreList");
+      scoreList.innerHTML = "";
+      ranked.forEach(type => {
+        const row = document.createElement("div");
+        row.className = "score-row";
+        const label = document.createElement("span");
+        label.textContent = TYPE_NAMES[type];
+        const track = document.createElement("div");
+        track.className = "score-track";
+        const bar = document.createElement("div");
+        bar.className = "score-bar";
+        bar.style.width = `${Math.round(finalScores.scores[type] / maxScore * 100)}%`;
+        track.appendChild(bar);
+        const value = document.createElement("span");
+        value.className = "score-value";
+        value.textContent = String(finalScores.scores[type]);
+        row.append(label, track, value);
+        scoreList.appendChild(row);
+      });
+      document.getElementById("progressFill").style.width = "100%";
+      showScreen(resultScreen);
+      window.setTimeout(() => document.querySelectorAll(".score-bar").forEach(bar => bar.style.width = bar.style.width), 60);
+    }
+
+    function getShareText() {
+      if (!finalScores) return "";
+      const ranked = [...TYPE_ORDER].sort((a, b) => finalScores.scores[b] - finalScores.scores[a] || finalScores.primaryCounts[b] - finalScores.primaryCounts[a] || TYPE_ORDER.indexOf(a) - TYPE_ORDER.indexOf(b));
+      const profile = typeProfiles[ranked[0]];
+      return `我测出了自己的历史人物灵魂画像：${profile.person}（${profile.title}）\n「${profile.tagline}」\n我的次要气质：${typeProfiles[ranked[1]].person} · ${TYPE_NAMES[ranked[1]]}\n来测测你的灵魂对应哪位中国历史人物！`;
+    }
+
+    async function copyResult() {
+      const text = getShareText();
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("结果文案已复制，可以分享给朋友啦。");
+      } catch (error) {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        const ok = document.execCommand("copy");
+        area.remove();
+        alert(ok ? "结果文案已复制，可以分享给朋友啦。" : "复制暂不可用，请手动复制结果标题。 ");
+      }
+    }
+
+    function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 4) {
+      let line = "";
+      let lines = 0;
+      for (const char of text) {
+        const test = line + char;
+        if (ctx.measureText(test).width > maxWidth && line) {
+          ctx.fillText(line, x, y);
+          line = char;
+          y += lineHeight;
+          lines += 1;
+          if (lines >= maxLines - 1) break;
+        } else {
+          line = test;
+        }
+      }
+      if (line && lines < maxLines) ctx.fillText(line, x, y);
+    }
+
+    function saveResultImage() {
+      if (!finalScores) return;
+      const ranked = [...TYPE_ORDER].sort((a, b) => finalScores.scores[b] - finalScores.scores[a] || finalScores.primaryCounts[b] - finalScores.primaryCounts[a] || TYPE_ORDER.indexOf(a) - TYPE_ORDER.indexOf(b));
+      const profile = typeProfiles[ranked[0]];
+      const canvas = document.createElement("canvas");
+      canvas.width = 1080;
+      canvas.height = 1440;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { alert("当前浏览器暂不支持生成图片，请使用截图功能保存结果。"); return; }
+      const bg = ctx.createLinearGradient(0, 0, 1080, 1440);
+      bg.addColorStop(0, "#172d2b");
+      bg.addColorStop(1, "#355448");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, 1080, 1440);
+      ctx.strokeStyle = "rgba(222,195,143,.45)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(34, 34, 1012, 1372);
+      ctx.strokeStyle = "rgba(222,195,143,.18)";
+      ctx.strokeRect(49, 49, 982, 1342);
+      ctx.fillStyle = "#d8bd8b";
+      ctx.font = "22px 'PingFang SC', 'Microsoft YaHei', sans-serif";
+      ctx.letterSpacing = "6px";
+      ctx.fillText("观人 · 见己     EASTERN SOUL ARCHETYPE", 86, 125);
+      ctx.fillStyle = "rgba(222,195,143,.12)";
+      ctx.beginPath(); ctx.arc(890, 235, 122, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(890, 235, 102, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = "rgba(222,195,143,.65)";
+      ctx.font = "70px 'Songti SC', 'STSong', serif";
+      ctx.fillText(profile.seal, 855, 260);
+      ctx.fillStyle = "#e1c999";
+      ctx.font = "24px 'PingFang SC', 'Microsoft YaHei', sans-serif";
+      ctx.fillText("你的历史人物灵魂画像", 88, 300);
+      ctx.fillStyle = "#f5efe1";
+      ctx.font = "bold 92px 'Songti SC', 'STSong', serif";
+      ctx.fillText(profile.person, 82, 450);
+      ctx.fillStyle = "#dfc99d";
+      ctx.font = "30px 'PingFang SC', 'Microsoft YaHei', sans-serif";
+      ctx.fillText(profile.title, 89, 515);
+      ctx.fillStyle = "#f1e8d7";
+      ctx.font = "34px 'Songti SC', 'STSong', serif";
+      drawWrappedText(ctx, `「${profile.tagline}」`, 88, 620, 885, 52, 3);
+      ctx.strokeStyle = "rgba(222,195,143,.34)";
+      ctx.beginPath(); ctx.moveTo(88, 800); ctx.lineTo(990, 800); ctx.stroke();
+      ctx.fillStyle = "#d8bd8b";
+      ctx.font = "23px 'PingFang SC', 'Microsoft YaHei', sans-serif";
+      ctx.fillText("你的性格关键词", 88, 870);
+      ctx.fillStyle = "#f5efe1";
+      ctx.font = "28px 'PingFang SC', 'Microsoft YaHei', sans-serif";
+      ctx.fillText(profile.traits.slice(0, 4).join("  ·  "), 88, 930);
+      ctx.fillStyle = "#d8bd8b";
+      ctx.font = "23px 'PingFang SC', 'Microsoft YaHei', sans-serif";
+      ctx.fillText("次要气质", 88, 1040);
+      ctx.fillStyle = "#f5efe1";
+      ctx.font = "32px 'Songti SC', 'STSong', serif";
+      ctx.fillText(`${typeProfiles[ranked[1]].person} · ${TYPE_NAMES[ranked[1]]}`, 88, 1097);
+      ctx.fillStyle = "rgba(245,239,225,.66)";
+      ctx.font = "20px 'PingFang SC', 'Microsoft YaHei', sans-serif";
+      ctx.fillText("40道生活选择 · 7种人物气质 · 纯娱乐测试", 88, 1280);
+      ctx.fillStyle = "rgba(245,239,225,.48)";
+      ctx.font = "18px 'PingFang SC', 'Microsoft YaHei', sans-serif";
+      ctx.fillText("每个人都不止一种面貌。山河万里 · 人心有声", 88, 1330);
+      const link = document.createElement("a");
+      link.download = `我的历史人物灵魂画像-${profile.person}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    }
+
+    function resetQuiz() {
+      window.clearTimeout(advanceTimer);
+      answers.fill(null);
+      currentIndex = 0;
+      inputLocked = false;
+      finalScores = null;
+      renderQuestion();
+      showScreen(homeScreen);
+    }
+
+    startBtn.addEventListener("click", () => {
+      currentIndex = 0;
+      inputLocked = false;
+      renderQuestion();
+      showScreen(quizScreen);
+    });
+    backBtn.addEventListener("click", goBack);
+    document.getElementById("copyResultBtn").addEventListener("click", copyResult);
+    document.getElementById("saveImageBtn").addEventListener("click", saveResultImage);
+    document.getElementById("retryBtn").addEventListener("click", resetQuiz);
+
+    // 启动前进行轻量数据校验，避免题目或评分维度配置错误。
+    (function validateQuizData() {
+      if (questions.length !== 40) throw new Error(`题目数量应为40，当前为${questions.length}`);
+      questions.forEach((q, index) => {
+        if (!q.prompt || !Array.isArray(q.options) || q.options.length !== 4) throw new Error(`第${index + 1}题配置不完整`);
+        q.options.forEach((item, optionIndex) => {
+          if (!item.text || !TYPE_ORDER.includes(item.main) || !TYPE_ORDER.includes(item.secondary)) {
+            throw new Error(`第${index + 1}题第${optionIndex + 1}个选项评分配置无效`);
+          }
+        });
+      });
+      if (Object.keys(typeProfiles).length !== TYPE_ORDER.length) throw new Error("人物结果配置数量与评分维度不一致");
+    })();
+  </script>
+</body>
+</html>
